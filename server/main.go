@@ -1,14 +1,26 @@
 package main
 
-import {
+import (
+    "html/template"
     "log"
     "net/http"
-}
+    "os"
+    "path/filepath"
+)
 
 func main() {
-    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request)) {
-        fmt.Printf("Hello World 2!")
-    }
+    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        cwd, _ := os.Getwd()
+        tmpl, err := template.ParseFiles(filepath.Join(cwd, "templates/index.html"))
+        if err != nil {
+            log.Fatalf("template parse: %s", err)
+        }
 
-    log.Fatal(http.ListenAndServe(":80", nil))
+        err = tmpl.Execute(w, nil)
+        if err != nil {
+            log.Fatalf("template execution: %s", err)
+        }
+    })
+
+    log.Fatal(http.ListenAndServe(":8080", nil))
 }
