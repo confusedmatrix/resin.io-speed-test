@@ -25,5 +25,5 @@ func main() {
 
     http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(filepath.Join(cwd, "static")))))
 
-    log.Fatal(http.ListenAndServe(":8080", nil))
+    log.Fatal(http.ListenAndServe(":80", nil))
 }
