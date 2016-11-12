@@ -1,0 +1,11 @@
+FROM resin/%%RESIN_MACHINE_NAME%%-golang
+
+ENV INITSYSTEM on
+
+WORKDIR /go/src/github.com/jooldesign/resin.io-speed-test
+
+COPY . ./
+
+RUN go install ./server
+
+CMD /go/bin/server
