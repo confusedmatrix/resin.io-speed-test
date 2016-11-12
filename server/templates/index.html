@@ -1,7 +1,85 @@
 <html>
 <head>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+
+    body {
+      background-color: #0A0A0A;
+      font-family: "Roboto Mono";
+    }
+    h1 {
+      color: #555;
+    }
+    .line {
+      fill: none;
+      stroke: #18CAE6;
+      stroke-width: 1.5px;
+    }
+    .axis .domain, .tick line {
+      stroke: #555;
+    }
+    text {
+      font-family: "Roboto Mono";
+      font-size: 12px;
+      fill: #555;
+    }
+  </style>
 </head>
 <body>
-    Hello World 3!
+  <h1>Internet speed test</h1>
+  <svg width="960" height="500"></svg>
+
+  <script>
+    var svg = d3.select("svg"),
+        margin = {top: 20, right: 20, bottom: 30, left: 50},
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom,
+        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // generate some dummy data
+    var time = Date.now(),
+        data = [];
+        
+    for (var i = 0; i < 10; i++) {
+      data.push({
+        time: time + (i * 60000),
+        speed: Math.random() * 16,
+      });
+    }
+
+    var x = d3.scaleTime()
+        .rangeRound([0, width]);
+
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0]);
+
+    var line = d3.line()
+        .x(function(d) { return x(d.time); })
+        .y(function(d) { return y(d.speed); });
+
+    x.domain(d3.extent(data, function(d) { return d.time; }));
+    y.domain([0, 20]);
+
+    g.append("g")
+        .attr("class", "axis axis--x")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    g.append("g")
+        .attr("class", "axis axis--y")
+        .call(d3.axisLeft(y))
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0)
+        .attr("dy", "-2.5em")
+        .style("text-anchor", "end")
+        .text("Speed (Mb/s)");
+
+    g.append("path")
+        .datum(data)
+        .attr("class", "line")
+        .attr("d", line);
+  </script>
 </body>
 </html>

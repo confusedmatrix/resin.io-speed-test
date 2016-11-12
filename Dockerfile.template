@@ -6,6 +6,10 @@ WORKDIR /go/src/github.com/jooldesign/resin.io-speed-test
 
 COPY . ./
 
-RUN go install ./server
+WORKDIR ./server
+
+RUN go install
+
+EXPOSE 8080
 
 CMD /go/bin/server
