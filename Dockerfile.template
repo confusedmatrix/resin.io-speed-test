@@ -10,6 +10,6 @@ WORKDIR ./server
 
 RUN go install
 
-EXPOSE 8080
+EXPOSE 80
 
 CMD /go/bin/server
