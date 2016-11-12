@@ -37,17 +37,6 @@
         height = +svg.attr("height") - margin.top - margin.bottom,
         g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // generate some dummy data
-    var time = Date.now(),
-        data = [];
-        
-    for (var i = 0; i < 10; i++) {
-      data.push({
-        time: time + (i * 60000),
-        speed: Math.random() * 16,
-      });
-    }
-
     var x = d3.scaleTime()
         .rangeRound([0, width]);
 
@@ -58,28 +47,30 @@
         .x(function(d) { return x(d.time); })
         .y(function(d) { return y(d.speed); });
 
-    x.domain(d3.extent(data, function(d) { return d.time; }));
-    y.domain([0, 20]);
+    d3.json("/static/data.json", function(data) {
+      x.domain(d3.extent(data, function(d) { return d.time; }));
+      y.domain([0, 20]);
 
-    g.append("g")
-        .attr("class", "axis axis--x")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
+      g.append("g")
+          .attr("class", "axis axis--x")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x));
 
-    g.append("g")
-        .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y))
-      .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 0)
-        .attr("dy", "-2.5em")
-        .style("text-anchor", "end")
-        .text("Speed (Mb/s)");
+      g.append("g")
+          .attr("class", "axis axis--y")
+          .call(d3.axisLeft(y))
+        .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 0)
+          .attr("dy", "-2.5em")
+          .style("text-anchor", "end")
+          .text("Speed (Mb/s)");
 
-    g.append("path")
-        .datum(data)
-        .attr("class", "line")
-        .attr("d", line);
+      g.append("path")
+          .datum(data)
+          .attr("class", "line")
+          .attr("d", line);
+    });
   </script>
 </body>
 </html>

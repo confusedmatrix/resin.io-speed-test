@@ -9,8 +9,9 @@ import (
 )
 
 func main() {
+    cwd, _ := os.Getwd()
+
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        cwd, _ := os.Getwd()
         tmpl, err := template.ParseFiles(filepath.Join(cwd, "templates/index.html"))
         if err != nil {
             log.Fatalf("template parse: %s", err)
@@ -22,5 +23,7 @@ func main() {
         }
     })
 
-    log.Fatal(http.ListenAndServe(":80", nil))
+    http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(filepath.Join(cwd, "static")))))
+
+    log.Fatal(http.ListenAndServe(":8080", nil))
 }

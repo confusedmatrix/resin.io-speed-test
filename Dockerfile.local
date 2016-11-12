@@ -6,8 +6,9 @@ COPY . ./
 
 WORKDIR ./server
 
+RUN go get
 RUN go install
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD /go/bin/server
