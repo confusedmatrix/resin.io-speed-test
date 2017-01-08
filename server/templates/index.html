@@ -47,7 +47,15 @@
         .x(function(d) { return x(d.time); })
         .y(function(d) { return y(d.speed); });
 
-    d3.json("/static/data.json", function(data) {
+    d3.csv("/static/data.csv", 
+    function(d) {
+      return {
+        time: new Date(d.time),
+        speed: d.speed
+      };
+    },
+    function(data) {
+      console.log(data);
       x.domain(d3.extent(data, function(d) { return d.time; }));
       y.domain([0, 20]);
 

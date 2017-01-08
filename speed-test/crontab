@@ -1,0 +1,2 @@
+SHELL=/bin/bash
+*/1 * * * * root /usr/bin/cron.sh >> /var/log/cron.log 2>&1

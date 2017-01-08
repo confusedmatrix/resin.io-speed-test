@@ -2,14 +2,35 @@ FROM resin/%%RESIN_MACHINE_NAME%%-golang
 
 ENV INITSYSTEM on
 
+RUN apt-get update -y && apt-get install -y supervisor cron
+
 WORKDIR /go/src/github.com/jooldesign/resin.io-speed-test
 
 COPY . ./
 
-WORKDIR ./server
+RUN cp supervisord.conf /etc/supervisor/supervisord.conf
+
+# Cron
+WORKDIR ./speed-test
+
+# Install go cron program
+RUN go install
+
+RUN cp crontab /etc/cron.d/go-cron
+
+RUN chmod 0644 /etc/cron.d/go-cron
+
+RUN touch /var/log/cron.log
+
+RUN ln -s /data /go/src/github.com/jooldesign/resin.io-speed-test/server/static
+
+# Server
+WORKDIR ../server
+
+RUN cp ./static/data.csv /data/data.csv
 
 RUN go install
 
 EXPOSE 80
 
-CMD /go/bin/server
+CMD /usr/bin/supervisord -c /etc/supervisor/supervisord.conf

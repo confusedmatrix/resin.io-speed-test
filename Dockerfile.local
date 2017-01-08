@@ -1,14 +1,32 @@
 FROM golang:1.6
 
+RUN apt-get update -y && apt-get install -y supervisor cron
+
 WORKDIR /go/src/github.com/jooldesign/resin.io-speed-test
 
 COPY . ./
 
-WORKDIR ./server
+RUN cp supervisord.conf /etc/supervisor/supervisord.conf
 
-RUN go get
+# Cron
+WORKDIR ./speed-test
+
+# Install go cron program
+RUN go install
+
+RUN cp crontab /etc/cron.d/go-cron
+RUN cp cron.sh /usr/bin/cron.sh
+
+RUN chmod 0644 /etc/cron.d/go-cron
+RUN chmod +x /usr/bin/cron.sh
+
+RUN touch /var/log/cron.log
+
+# Server
+WORKDIR ../server
+
 RUN go install
 
 EXPOSE 80
 
-CMD /go/bin/server
+CMD /usr/bin/supervisord -c /etc/supervisor/supervisord.conf

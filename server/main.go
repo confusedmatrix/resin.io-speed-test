@@ -1,6 +1,7 @@
 package main
 
 import (
+    "fmt"
     "html/template"
     "log"
     "net/http"
@@ -25,5 +26,6 @@ func main() {
 
     http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(filepath.Join(cwd, "static")))))
 
+    fmt.Println("Starting webserver at http://localhost:80")
     log.Fatal(http.ListenAndServe(":80", nil))
 }
